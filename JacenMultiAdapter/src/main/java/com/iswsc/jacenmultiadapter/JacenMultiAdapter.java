@@ -35,7 +35,7 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
      * @param mList
      * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
      */
-    public JacenMultiAdapter(Context context, List<T> mList, AbsBaseViewItem... item) {
+    public JacenMultiAdapter(Context context, List<T> mList, AbsBaseViewItem<T, BaseViewHolder>... item) {
         this.context = context;
         this.mList = mList;
         sparseArray = new SparseArray<>(item.length);
@@ -50,7 +50,7 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
      * @param mList
      * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
      */
-    public JacenMultiAdapter(Context context, List<T> mList, int[] keys, AbsBaseViewItem... item) {
+    public JacenMultiAdapter(Context context, List<T> mList, int[] keys, AbsBaseViewItem<T, BaseViewHolder>... item) {
         this.context = context;
         this.mList = mList;
         if (keys.length != item.length) {
