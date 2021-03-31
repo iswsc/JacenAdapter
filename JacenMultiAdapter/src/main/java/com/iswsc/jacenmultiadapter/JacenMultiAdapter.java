@@ -1,17 +1,19 @@
 package com.iswsc.jacenmultiadapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @author Jacen on 2017/12/31 0:51.
  * @version 1.0
  * @email jacen@iswsc.com
- * @author Jacen on 2017/12/31 0:51.
  */
 public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     protected Context context;
@@ -19,7 +21,7 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     protected OnItemLongClickListener longClickListener;
     protected List<T> mList;
 
-    protected SparseArray<AbsBaseViewItem> sparseArray;
+    protected SparseArray<AbsBaseViewItem<T, BaseViewHolder>> sparseArray;
 
     public void setOnClickListener(OnItemClickListener clickListener) {
         this.clickListener = clickListener;
@@ -31,10 +33,22 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
 
     /**
      * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
-     * @param context
-     * @param mList
+     *
+     * @param context 上下文
      * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
      */
+    public JacenMultiAdapter(Context context, AbsBaseViewItem<T, BaseViewHolder> item) {
+        this(context, null, new int[]{0}, item);
+    }
+
+    /**
+     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
+     *
+     * @param context 上下文
+     * @param mList   数据源
+     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
+     */
+    @Deprecated
     public JacenMultiAdapter(Context context, List<T> mList, AbsBaseViewItem<T, BaseViewHolder>... item) {
         this.context = context;
         this.mList = mList;
@@ -46,8 +60,20 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
 
     /**
      * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
-     * @param context
-     * @param mList
+     *
+     * @param context 上下文
+     * @param mList   数据源
+     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
+     */
+    public JacenMultiAdapter(Context context, List<T> mList, AbsBaseViewItem<T, BaseViewHolder> item) {
+        this(context, mList, new int[]{0}, item);
+    }
+
+    /**
+     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
+     *
+     * @param context 上下文
+     * @param mList   数据源
      * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
      */
     public JacenMultiAdapter(Context context, List<T> mList, int[] keys, AbsBaseViewItem<T, BaseViewHolder>... item) {
@@ -63,11 +89,11 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        AbsBaseViewItem viewItem = sparseArray.get(viewType);
-        checkViewItemIsNull(viewItem,viewType);
-        viewItem.setItemCount(getItemCount());
-        viewItem.setList(mList);
+    @NonNull
+    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(viewType);
+        checkViewItemIsNull(viewItem, viewType);
+        viewItem.setAdapter(this);
         BaseViewHolder holder = viewItem.onCreateViewHolder(context, parent);
         holder.setOnClickListener(clickListener);
         holder.setOnLongClickListener(longClickListener);
@@ -75,14 +101,14 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(BaseViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         int itemViewType = getItemViewType(position);
-        AbsBaseViewItem viewItem = sparseArray.get(itemViewType);
+        AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(itemViewType);
         checkViewItemIsNull(viewItem, itemViewType);
         viewItem.onBindViewHolder(holder, mList.get(position), position);
     }
 
-    private void checkViewItemIsNull(AbsBaseViewItem viewItem, int itemViewType) {
+    private void checkViewItemIsNull(AbsBaseViewItem<T, BaseViewHolder> viewItem, int itemViewType) {
         if (viewItem == null) {
             throw new NullPointerException(String.format("itemViewType = %s is not implement", itemViewType));
         }
