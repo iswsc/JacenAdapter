@@ -1,4 +1,4 @@
-package com.iswsc.jacenadapter;
+package com.iswsc.jacenadapter.bean;
 
 import com.iswsc.jacenmultiadapter.IViewItem;
 

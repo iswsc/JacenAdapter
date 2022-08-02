@@ -24,16 +24,20 @@ public abstract class AbsBaseViewItem<D, VH extends BaseViewHolder> {
 
     private JacenMultiAdapter<D> mAdapter;
 
-    public void setAdapter(JacenMultiAdapter<D> mAdapter) {
+    protected void setAdapter(JacenMultiAdapter<D> mAdapter) {
         this.mAdapter = mAdapter;
     }
 
     public int getItemCount() {
-        return mAdapter.getItemCount();
+        if(mAdapter != null){
+            return mAdapter.getItemCount();
+        }else {
+            return 0;
+        }
     }
 
     public List<D> getList() {
-        return mAdapter.getList();
+        return mAdapter == null ? null:mAdapter.getList();
     }
 
 
@@ -44,7 +48,13 @@ public abstract class AbsBaseViewItem<D, VH extends BaseViewHolder> {
      */
     public  VH onCreateViewHolder(Context context, ViewGroup parent){
         this.context = context;
-        VH holder = createBaseViewHolder(LayoutInflater.from(context).inflate(getViewHolderLayoutId(), parent, false));
+        View view= null;
+        if(getViewHolderLayoutId() > 0){
+            view = LayoutInflater.from(context).inflate(getViewHolderLayoutId(), parent, false);
+        }else{
+            view = getItemView();
+        }
+        VH holder = createBaseViewHolder(view);
         return holder;
     }
 
@@ -130,8 +140,19 @@ public abstract class AbsBaseViewItem<D, VH extends BaseViewHolder> {
         return null;
     }
 
-
+    /**
+     * 加载xml布局 优先于{@link this#getItemView}
+     * @return
+     */
     public abstract int getViewHolderLayoutId();
+
+    /**
+     * 使用自定义View 不使用xml{@link this#getViewHolderLayoutId} 加载布局
+     * @return
+     */
+    public View getItemView(){
+        return null;
+    }
 
     public abstract void onBindViewHolder(VH holder, D data,int position);
 

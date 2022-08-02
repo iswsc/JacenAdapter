@@ -6,7 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.iswsc.jacenadapter.bean.UserInfoBean;
+import com.iswsc.jacenadapter.bean.UserInfoBean2;
+import com.iswsc.jacenadapter.bean.UserInfoBean3;
+import com.iswsc.jacenadapter.item.UserInfoAllData2Item;
+import com.iswsc.jacenadapter.item.UserInfoAllData3Item;
+import com.iswsc.jacenadapter.item.UserInfoAllDataItem;
 import com.iswsc.jacenmultiadapter.BaseViewHolder;
+import com.iswsc.jacenmultiadapter.JacenAllDataAdapter;
 import com.iswsc.jacenmultiadapter.JacenMultiAdapter;
 import com.iswsc.jacenmultiadapter.SimpleItem;
 
@@ -35,5 +42,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mRecyclerView.setAdapter(mAdapter);
+
+        JacenAllDataAdapter adapter = new JacenAllDataAdapter(this,new UserInfoAllDataItem(),new UserInfoAllData2Item(),new UserInfoAllData3Item());
+        adapter.addData(new UserInfoBean("1"));
+        adapter.addData(new UserInfoBean2("2"));
+        adapter.addData(new UserInfoBean3("3"));
+        mRecyclerView.setAdapter(adapter);
+        adapter.addData(JacenAllDataAdapter.convertList(list),0);
     }
 }
