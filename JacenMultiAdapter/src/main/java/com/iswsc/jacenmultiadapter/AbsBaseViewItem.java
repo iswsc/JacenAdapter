@@ -22,9 +22,9 @@ public abstract class AbsBaseViewItem<D, VH extends BaseViewHolder> {
 
     protected Context context;
 
-    private JacenMultiAdapter<D> mAdapter;
+    private JacenAdapter<D> mAdapter;
 
-    protected void setAdapter(JacenMultiAdapter<D> mAdapter) {
+    protected void setAdapter(JacenAdapter<D> mAdapter) {
         this.mAdapter = mAdapter;
     }
 
@@ -156,6 +156,29 @@ public abstract class AbsBaseViewItem<D, VH extends BaseViewHolder> {
 
     public abstract void onBindViewHolder(VH holder, D data,int position);
 
+    /**
+     * 添加点击事件id
+     * @return
+     */
+    public int[] addOnClickViewIds(){
+        return null;
+    }
 
+    /**
+     * 添加长按点击事件id
+     * @return
+     */
+    public int[] addOnLongClickViewIds(){
+        return null;
+    }
+
+    public void onViewClick(View view,D data,int position){
+
+    }
+
+    public boolean onViewLongClick(View view,D data,int position){
+
+        return false;
+    }
 
 }

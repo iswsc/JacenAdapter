@@ -15,6 +15,7 @@ import java.util.List;
  * @version 1.0
  * @email jacen@iswsc.com
  */
+@Deprecated
 public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     protected Context context;
     protected OnItemClickListener clickListener;
@@ -23,11 +24,21 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
 
     protected SparseArray<AbsBaseViewItem<T, BaseViewHolder>> sparseArray;
 
+    @Deprecated
     public void setOnClickListener(OnItemClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
+    @Deprecated
     public void setOnLongClickListener(OnItemLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener clickListener){
+        this.clickListener = clickListener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener longClickListener){
         this.longClickListener = longClickListener;
     }
 
@@ -48,14 +59,8 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
      * @param mList   数据源
      * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
      */
-    @Deprecated
     public JacenMultiAdapter(Context context, List<T> mList, AbsBaseViewItem<T, BaseViewHolder>... item) {
-        this.context = context;
-        this.mList = mList;
-        sparseArray = new SparseArray<>(item.length);
-        for (int i = 0; i < item.length; i++) {
-            sparseArray.put(i, item[i]);
-        }
+        this(context, mList, null, item);
     }
 
     /**
@@ -79,6 +84,12 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     public JacenMultiAdapter(Context context, List<T> mList, int[] keys, AbsBaseViewItem<T, BaseViewHolder>... item) {
         this.context = context;
         this.mList = mList;
+        if(keys == null){
+            keys = new int[item.length];
+            for (int i = 0; i < item.length; i++) {
+                keys[i] = i;
+            }
+        }
         if (keys.length != item.length) {
             throw new ArrayIndexOutOfBoundsException(String.format("keys.length != item.length %d!=%d", keys.length, item.length));
         }
@@ -93,7 +104,6 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(viewType);
         checkViewItemIsNull(viewItem, viewType);
-        viewItem.setAdapter(this);
         BaseViewHolder holder = viewItem.onCreateViewHolder(context, parent);
         holder.setOnClickListener(clickListener);
         holder.setOnLongClickListener(longClickListener);
@@ -186,7 +196,6 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
         mList.remove(position);
 
         notifyItemRemoved(position);
-//        notifyItemChanged(position,"remove");
         if (position != mList.size()) {
             notifyItemRangeChanged(position, mList.size() - position);
         }

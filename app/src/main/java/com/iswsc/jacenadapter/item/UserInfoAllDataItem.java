@@ -2,7 +2,6 @@ package com.iswsc.jacenadapter.item;
 
 import com.iswsc.jacenadapter.R;
 import com.iswsc.jacenadapter.bean.UserInfoBean;
-import com.iswsc.jacenmultiadapter.AbsBaseAllDataViewItem;
 import com.iswsc.jacenmultiadapter.BaseViewHolder;
 
 /**

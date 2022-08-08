@@ -12,64 +12,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author jacen
- * @date 2022/8/2 2:00 下午
+ * base
+ * @data 2022/8/8 2:59 下午
  * @email jacen@iswsc.com
+ * @author Jacen
  */
-public class JacenAllDataAdapter extends RecyclerView.Adapter<BaseViewHolder>{
+public class JacenAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     protected Context context;
     protected OnItemClickListener clickListener;
     protected OnItemLongClickListener longClickListener;
-    protected List<IViewItem> mList;
+    protected List<T> mList;
 
-    protected SparseArray<AbsBaseViewItem<IViewItem, BaseViewHolder>> sparseArray;
+    protected SparseArray<AbsBaseViewItem<T, BaseViewHolder>> sparseArray;
 
-    public static <D extends IViewItem> List<IViewItem> convertList(List<D> list){
-        List<IViewItem> itemList = new ArrayList<>();
-        itemList.addAll(list);
-        return itemList;
-    }
-
-    public void setOnClickListener(OnItemClickListener clickListener) {
+    public void setOnItemClickListener(OnItemClickListener clickListener){
         this.clickListener = clickListener;
     }
 
-    public void setOnLongClickListener(OnItemLongClickListener longClickListener) {
+    public void setOnItemLongClickListener(OnItemLongClickListener longClickListener){
         this.longClickListener = longClickListener;
     }
 
-    /**
-     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
-     *
-     * @param context 上下文
-     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
-     */
-    public JacenAllDataAdapter(Context context, AbsBaseViewItem<IViewItem, BaseViewHolder>... item) {
-        this(context,null,null,item);
+    public JacenAdapter(Context context, AbsBaseViewItem<T, BaseViewHolder>...item) {
+        this(context, null, null, item);
+    }
+
+    public JacenAdapter(Context context, List<T> mList, AbsBaseViewItem<T, BaseViewHolder>... item) {
+        this(context, mList, null, item);
     }
 
     /**
-     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
      *
      * @param context 上下文
-     * @param mList   数据源
-     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
+     * @param mList 数据源
+     * @param keys 多类型布局使用 viewTypeIds 不传 默认与item个数一致 自动生成 0,1,2,3
+     * @param item 多布局 item
      */
-    public JacenAllDataAdapter(Context context, List<IViewItem> mList, AbsBaseViewItem<IViewItem, BaseViewHolder>... item) {
-        this(context,mList,null,item);
-    }
-
-    /**
-     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
-     *
-     * @param context 上下文
-     * @param mList   数据源
-     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
-     */
-    public JacenAllDataAdapter(Context context, List<IViewItem> mList, int[] keys, AbsBaseViewItem<IViewItem, BaseViewHolder>... item) {
+    public JacenAdapter(Context context, List<T> mList, int[] keys, AbsBaseViewItem<T, BaseViewHolder>... item) {
         this.context = context;
         this.mList = mList;
-        if(keys == null ){
+        if(keys == null){
             keys = new int[item.length];
             for (int i = 0; i < item.length; i++) {
                 keys[i] = i;
@@ -81,29 +63,73 @@ public class JacenAllDataAdapter extends RecyclerView.Adapter<BaseViewHolder>{
         sparseArray = new SparseArray<>(item.length);
         for (int i = 0; i < item.length; i++) {
             sparseArray.put(keys[i], item[i]);
+            item[i].setAdapter(this);
         }
     }
 
     @Override
     @NonNull
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        AbsBaseViewItem<IViewItem, BaseViewHolder> viewItem = sparseArray.get(viewType);
+        final AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(viewType);
         checkViewItemIsNull(viewItem, viewType);
-        BaseViewHolder holder = viewItem.onCreateViewHolder(context, parent);
+        final BaseViewHolder holder = viewItem.onCreateViewHolder(context, parent);
+        bindViewClickListener(viewItem, holder);
+        bindViewLongClickListener(viewItem, holder);
         holder.setOnClickListener(clickListener);
         holder.setOnLongClickListener(longClickListener);
         return holder;
     }
 
+    /**
+     * 点击事件
+     * @param viewItem
+     * @param holder
+     */
+    private void bindViewClickListener(final AbsBaseViewItem<T, BaseViewHolder> viewItem, final BaseViewHolder holder) {
+        int[] clickIds = viewItem.addOnClickViewIds();
+        if(clickIds != null){
+            for (int clickId : clickIds) {
+                holder.getView(clickId).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = holder.getLayoutPosition();
+                        viewItem.onViewClick(v,mList.get(position),position);
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * 长按点击事件
+     * @param viewItem
+     * @param holder
+     */
+    private void bindViewLongClickListener(final AbsBaseViewItem<T, BaseViewHolder> viewItem, final BaseViewHolder holder) {
+        int[] clickIds = viewItem.addOnLongClickViewIds();
+        if(clickIds != null){
+            for (int clickId : clickIds) {
+                holder.getView(clickId).setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        int position = holder.getLayoutPosition();
+                        return viewItem.onViewLongClick(v,mList.get(position),position);
+                    }
+                });
+            }
+        }
+    }
+
+
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         int itemViewType = getItemViewType(position);
-        AbsBaseViewItem<IViewItem, BaseViewHolder> viewItem = sparseArray.get(itemViewType);
+        AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(itemViewType);
         checkViewItemIsNull(viewItem, itemViewType);
         viewItem.onBindViewHolder(holder, mList.get(position), position);
     }
 
-    private void checkViewItemIsNull(AbsBaseViewItem<IViewItem, BaseViewHolder> viewItem, int itemViewType) {
+    private void checkViewItemIsNull(AbsBaseViewItem<T, BaseViewHolder> viewItem, int itemViewType) {
         if (viewItem == null) {
             throw new NullPointerException(String.format("itemViewType = %s is not implement", itemViewType));
         }
@@ -111,7 +137,7 @@ public class JacenAllDataAdapter extends RecyclerView.Adapter<BaseViewHolder>{
 
     @Override
     public int getItemViewType(int position) {
-        if (mList.get(position) != null) {
+        if (mList.get(position) instanceof IViewItem) {
             return ((IViewItem) mList.get(position)).getIViewItemType();
         } else {
             return 0;
@@ -123,14 +149,14 @@ public class JacenAllDataAdapter extends RecyclerView.Adapter<BaseViewHolder>{
         return mList == null ? 0 : mList.size();
     }
 
-    public void updateList(List<IViewItem> mList) {
+    public void updateList(List<T> mList) {
         this.mList = mList;
         notifyDataSetChanged();
     }
 
-    public void addData(IViewItem data, int position) {
+    public void addData(T data, int position) {
         if (mList == null) {
-            mList = new ArrayList<>();
+            mList = new ArrayList<T>();
         }
         mList.add(position, data);
 
@@ -141,23 +167,25 @@ public class JacenAllDataAdapter extends RecyclerView.Adapter<BaseViewHolder>{
         }
     }
 
-    public void addData(IViewItem data) {
+    public void addData(T data) {
         addData(data, getItemCount());
     }
 
-    public void addData(List<IViewItem> datas, int position) {
+    public void addData(List<T> datas, int position) {
         if (datas == null || datas.isEmpty()) {
             return;
         }
         if (mList == null) {
-            mList = new ArrayList<>();
+            mList = new ArrayList<T>();
         }
         mList.addAll(position, datas);
         notifyItemRangeInserted(position, datas.size());
+//        notifyItemInserted(position,datas.size());
+//        notifyItemChanged(position,"adds");
         notifyItemRangeChanged(position, datas.size(), "adds");
     }
 
-    public void updateData(IViewItem data, int position) {
+    public void updateData(T data, int position) {
         if (mList == null) {
             return;
         }
@@ -167,11 +195,11 @@ public class JacenAllDataAdapter extends RecyclerView.Adapter<BaseViewHolder>{
     }
 
 
-    public IViewItem getData(int position) {
+    public T getData(int position) {
         return mList != null ? mList.get(position) : null;
     }
 
-    public List<IViewItem> getList() {
+    public List<T> getList() {
         return mList;
     }
 
@@ -188,4 +216,5 @@ public class JacenAllDataAdapter extends RecyclerView.Adapter<BaseViewHolder>{
         mList.remove(position);
         notifyDataSetChanged();
     }
+
 }

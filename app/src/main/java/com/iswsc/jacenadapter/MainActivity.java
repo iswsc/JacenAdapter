@@ -13,7 +13,6 @@ import com.iswsc.jacenadapter.item.UserInfoAllData2Item;
 import com.iswsc.jacenadapter.item.UserInfoAllData3Item;
 import com.iswsc.jacenadapter.item.UserInfoAllDataItem;
 import com.iswsc.jacenmultiadapter.BaseViewHolder;
-import com.iswsc.jacenmultiadapter.JacenAllDataAdapter;
 import com.iswsc.jacenmultiadapter.JacenMultiAdapter;
 import com.iswsc.jacenmultiadapter.SimpleItem;
 
@@ -41,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
                 holder.setText(R.id.content,data.getUserInfo() + " position = " + position);
             }
         });
-        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerView.setAdapter(mAdapter);
 
-        JacenAllDataAdapter adapter = new JacenAllDataAdapter(this,new UserInfoAllDataItem(),new UserInfoAllData2Item(),new UserInfoAllData3Item());
+        JacenMultiAdapterNew adapter = new JacenMultiAdapterNew(this,new UserInfoAllDataItem(),new UserInfoAllData2Item(),new UserInfoAllData3Item());
         adapter.addData(new UserInfoBean("1"));
         adapter.addData(new UserInfoBean2("2"));
         adapter.addData(new UserInfoBean3("3"));
