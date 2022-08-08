@@ -22,9 +22,11 @@ public abstract class AbsBaseViewItem<D, VH extends BaseViewHolder> {
 
     protected Context context;
 
-    private JacenMultiAdapter<D> mAdapter;
+    private JacenAdapter<D,VH> mAdapter;
+    private int itemCount = 0;
+    private List<D> mList;
 
-    protected void setAdapter(JacenMultiAdapter<D> mAdapter) {
+    protected void setAdapter(JacenAdapter<D,VH> mAdapter) {
         this.mAdapter = mAdapter;
     }
 
@@ -32,14 +34,20 @@ public abstract class AbsBaseViewItem<D, VH extends BaseViewHolder> {
         if(mAdapter != null){
             return mAdapter.getItemCount();
         }else {
-            return 0;
+            return itemCount;
         }
+    }
+    protected void setItemCount(int itemCount){
+        this.itemCount = itemCount;
     }
 
     public List<D> getList() {
-        return mAdapter == null ? null:mAdapter.getList();
+        return mAdapter == null ? mList:mAdapter.getList();
     }
 
+    protected void setList(List<D> mList){
+        this.mList = mList;
+    }
 
     /**
      * @param context
@@ -155,7 +163,6 @@ public abstract class AbsBaseViewItem<D, VH extends BaseViewHolder> {
     }
 
     public abstract void onBindViewHolder(VH holder, D data,int position);
-
 
 
 }
