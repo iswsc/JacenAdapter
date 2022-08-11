@@ -4,13 +4,14 @@ import android.content.Context;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
+ * please use{@link JacenAdapter} or {@link JacenAllAdapter}
  * @author Jacen on 2017/12/31 0:51.
  * @version 1.0
  * @email jacen@iswsc.com
@@ -22,74 +23,40 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     protected OnItemLongClickListener longClickListener;
     protected List<T> mList;
 
-    protected SparseArray<AbsBaseViewItem<T, BaseViewHolder>> sparseArray;
+    protected SparseArray<AbsBaseViewItem> sparseArray;
 
-    @Deprecated
     public void setOnClickListener(OnItemClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
-    @Deprecated
     public void setOnLongClickListener(OnItemLongClickListener longClickListener) {
         this.longClickListener = longClickListener;
     }
 
-    public void setOnItemClickListener(OnItemClickListener clickListener){
-        this.clickListener = clickListener;
-    }
-
-    public void setOnItemLongClickListener(OnItemLongClickListener longClickListener){
-        this.longClickListener = longClickListener;
-    }
-
     /**
      * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
-     *
-     * @param context 上下文
+     * @param context
+     * @param mList
      * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
      */
-    public JacenMultiAdapter(Context context, AbsBaseViewItem<T, BaseViewHolder> item) {
-        this(context, null, new int[]{0}, item);
-    }
-
-    /**
-     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
-     *
-     * @param context 上下文
-     * @param mList   数据源
-     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
-     */
-    public JacenMultiAdapter(Context context, List<T> mList, AbsBaseViewItem<T, BaseViewHolder>... item) {
-        this(context, mList, null, item);
-    }
-
-    /**
-     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
-     *
-     * @param context 上下文
-     * @param mList   数据源
-     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
-     */
-    public JacenMultiAdapter(Context context, List<T> mList, AbsBaseViewItem<T, BaseViewHolder> item) {
-        this(context, mList, new int[]{0}, item);
-    }
-
-    /**
-     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
-     *
-     * @param context 上下文
-     * @param mList   数据源
-     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
-     */
-    public JacenMultiAdapter(Context context, List<T> mList, int[] keys, AbsBaseViewItem<T, BaseViewHolder>... item) {
+    public JacenMultiAdapter(Context context, List<T> mList, AbsBaseViewItem... item) {
         this.context = context;
         this.mList = mList;
-        if(keys == null){
-            keys = new int[item.length];
-            for (int i = 0; i < item.length; i++) {
-                keys[i] = i;
-            }
+        sparseArray = new SparseArray<>(item.length);
+        for (int i = 0; i < item.length; i++) {
+            sparseArray.put(i, item[i]);
         }
+    }
+
+    /**
+     * 如果是单布局 则sparseArray.put(0,IViewItemImpl);
+     * @param context
+     * @param mList
+     * @param item    多布局 单布局key为0 多布局 请实现{@link IViewItem}
+     */
+    public JacenMultiAdapter(Context context, List<T> mList, int[] keys, AbsBaseViewItem... item) {
+        this.context = context;
+        this.mList = mList;
         if (keys.length != item.length) {
             throw new ArrayIndexOutOfBoundsException(String.format("keys.length != item.length %d!=%d", keys.length, item.length));
         }
@@ -100,10 +67,11 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     @Override
-    @NonNull
-    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(viewType);
-        checkViewItemIsNull(viewItem, viewType);
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        AbsBaseViewItem viewItem = sparseArray.get(viewType);
+        checkViewItemIsNull(viewItem,viewType);
+        viewItem.setItemCount(getItemCount());
+        viewItem.setList(mList);
         BaseViewHolder holder = viewItem.onCreateViewHolder(context, parent);
         holder.setOnClickListener(clickListener);
         holder.setOnLongClickListener(longClickListener);
@@ -111,14 +79,14 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
         int itemViewType = getItemViewType(position);
-        AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(itemViewType);
+        AbsBaseViewItem viewItem = sparseArray.get(itemViewType);
         checkViewItemIsNull(viewItem, itemViewType);
         viewItem.onBindViewHolder(holder, mList.get(position), position);
     }
 
-    private void checkViewItemIsNull(AbsBaseViewItem<T, BaseViewHolder> viewItem, int itemViewType) {
+    private void checkViewItemIsNull(AbsBaseViewItem viewItem, int itemViewType) {
         if (viewItem == null) {
             throw new NullPointerException(String.format("itemViewType = %s is not implement", itemViewType));
         }
@@ -196,6 +164,7 @@ public class JacenMultiAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
         mList.remove(position);
 
         notifyItemRemoved(position);
+//        notifyItemChanged(position,"remove");
         if (position != mList.size()) {
             notifyItemRangeChanged(position, mList.size() - position);
         }

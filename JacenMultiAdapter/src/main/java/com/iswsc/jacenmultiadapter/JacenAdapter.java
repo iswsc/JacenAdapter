@@ -23,7 +23,7 @@ public class JacenAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     protected OnItemLongClickListener longClickListener;
     protected List<T> mList;
 
-    protected SparseArray<AbsBaseViewItem<T, BaseViewHolder>> sparseArray;
+    protected SparseArray<BaseViewItem<T, BaseViewHolder>> sparseArray;
 
     public void setOnItemClickListener(OnItemClickListener clickListener){
         this.clickListener = clickListener;
@@ -33,11 +33,11 @@ public class JacenAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
         this.longClickListener = longClickListener;
     }
 
-    public JacenAdapter(Context context, AbsBaseViewItem<T, BaseViewHolder>...item) {
+    public JacenAdapter(Context context, BaseViewItem<T, BaseViewHolder>...item) {
         this(context, null, null, item);
     }
 
-    public JacenAdapter(Context context, List<T> mList, AbsBaseViewItem<T, BaseViewHolder>... item) {
+    public JacenAdapter(Context context, List<T> mList, BaseViewItem<T, BaseViewHolder>... item) {
         this(context, mList, null, item);
     }
 
@@ -48,7 +48,7 @@ public class JacenAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
      * @param keys 多类型布局使用 viewTypeIds 不传 默认与item个数一致 自动生成 0,1,2,3
      * @param item 多布局 item
      */
-    public JacenAdapter(Context context, List<T> mList, int[] keys, AbsBaseViewItem<T, BaseViewHolder>... item) {
+    public JacenAdapter(Context context, List<T> mList, int[] keys, BaseViewItem<T, BaseViewHolder>... item) {
         this.context = context;
         this.mList = mList;
         if(keys == null){
@@ -70,7 +70,7 @@ public class JacenAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     @Override
     @NonNull
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(viewType);
+        final BaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(viewType);
         checkViewItemIsNull(viewItem, viewType);
         final BaseViewHolder holder = viewItem.onCreateViewHolder(context, parent);
         bindViewClickListener(viewItem, holder);
@@ -85,7 +85,7 @@ public class JacenAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
      * @param viewItem
      * @param holder
      */
-    private void bindViewClickListener(final AbsBaseViewItem<T, BaseViewHolder> viewItem, final BaseViewHolder holder) {
+    private void bindViewClickListener(final BaseViewItem<T, BaseViewHolder> viewItem, final BaseViewHolder holder) {
         int[] clickIds = viewItem.addOnClickViewIds();
         if(clickIds != null){
             for (int clickId : clickIds) {
@@ -105,7 +105,7 @@ public class JacenAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
      * @param viewItem
      * @param holder
      */
-    private void bindViewLongClickListener(final AbsBaseViewItem<T, BaseViewHolder> viewItem, final BaseViewHolder holder) {
+    private void bindViewLongClickListener(final BaseViewItem<T, BaseViewHolder> viewItem, final BaseViewHolder holder) {
         int[] clickIds = viewItem.addOnLongClickViewIds();
         if(clickIds != null){
             for (int clickId : clickIds) {
@@ -124,12 +124,12 @@ public class JacenAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         int itemViewType = getItemViewType(position);
-        AbsBaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(itemViewType);
+        BaseViewItem<T, BaseViewHolder> viewItem = sparseArray.get(itemViewType);
         checkViewItemIsNull(viewItem, itemViewType);
         viewItem.onBindViewHolder(holder, mList.get(position), position);
     }
 
-    private void checkViewItemIsNull(AbsBaseViewItem<T, BaseViewHolder> viewItem, int itemViewType) {
+    private void checkViewItemIsNull(BaseViewItem<T, BaseViewHolder> viewItem, int itemViewType) {
         if (viewItem == null) {
             throw new NullPointerException(String.format("itemViewType = %s is not implement", itemViewType));
         }

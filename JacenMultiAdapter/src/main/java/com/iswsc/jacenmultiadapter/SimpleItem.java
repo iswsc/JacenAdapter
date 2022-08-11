@@ -6,7 +6,7 @@ package com.iswsc.jacenmultiadapter;
  * @date 2021/3/31 16:36
  * @email jacen@iswsc.com
  */
-public abstract  class SimpleItem<D> extends AbsBaseViewItem<D,BaseViewHolder>  {
+public abstract  class SimpleItem<D> extends BaseViewItem<D,BaseViewHolder>  {
     int layoutId;
     public SimpleItem(int layoutId) {
         this.layoutId = layoutId;
