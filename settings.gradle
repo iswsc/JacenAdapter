@@ -1,2 +1,2 @@
-include ':app', ':JacenMultiAdapter'
+include ':app', ':JacenAdapter'
 rootProject.name='JacenAdapter'
