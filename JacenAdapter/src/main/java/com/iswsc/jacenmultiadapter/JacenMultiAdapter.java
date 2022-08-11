@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * please use{@link JacenAdapter} or {@link JacenAllAdapter}
+ * please use{@link BaseAdapter} or {@link JacenAllAdapter}
  * @author Jacen on 2017/12/31 0:51.
  * @version 1.0
  * @email jacen@iswsc.com

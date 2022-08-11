@@ -5,9 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.iswsc.jacenmultiadapter.BaseViewHolder;
-import com.iswsc.jacenmultiadapter.JacenAdapter;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -25,9 +22,9 @@ public abstract class BaseViewItem<D, VH extends BaseViewHolder> {
 
     protected Context context;
 
-    private JacenAdapter<D> mAdapter;
+    private BaseAdapter<D,VH> mAdapter;
 
-    protected void setAdapter(JacenAdapter<D> mAdapter) {
+    protected void setAdapter(BaseAdapter<D,VH> mAdapter) {
         this.mAdapter = mAdapter;
     }
 
@@ -147,7 +144,9 @@ public abstract class BaseViewItem<D, VH extends BaseViewHolder> {
      * 加载xml布局 优先于{@link this#getViewHolderItemView}
      * @return
      */
-    public abstract int getViewHolderLayoutId();
+    public int getViewHolderLayoutId(){
+        return 0;
+    }
 
     /**
      * 使用自定义View 不使用xml{@link this#getViewHolderLayoutId} 加载布局
