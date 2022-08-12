@@ -4,14 +4,14 @@ import android.content.Context;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 已放弃维护 请使用JacenAdapter{@link JacenAdapter}
+ *
+ * please use{@link BaseAdapter} or {@link JacenAllAdapter}
  * @author Jacen on 2017/12/31 0:51.
  * @version 1.0
  * @email jacen@iswsc.com

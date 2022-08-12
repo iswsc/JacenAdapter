@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
@@ -28,11 +27,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(':JacenAdapter')
-//    implementation 'com.iswsc.jacenadapter:jacenadapter:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-}
-repositories {
-    mavenCentral()
+//    implementation 'com.iswsc:JacenAdapter:1.0.4'
 }
