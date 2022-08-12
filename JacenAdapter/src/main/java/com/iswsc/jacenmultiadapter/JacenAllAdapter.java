@@ -2,6 +2,7 @@ package com.iswsc.jacenmultiadapter;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,5 +23,46 @@ public class JacenAllAdapter extends JacenAdapter<IViewItem> {
 
     public JacenAllAdapter(Context context, List<IViewItem> mList, int[] keys, BaseAllViewItem... item) {
         super(context, mList, keys, item);
+    }
+
+    /**
+     * please use {@link this#updateList2}
+     * @param mList 数据源
+     */
+    @Override
+    @Deprecated
+    public void updateList(List<IViewItem> mList) {
+        super.updateList(mList);
+    }
+
+    public <T extends IViewItem> void updateList2(List<T> list){
+        updateList(new ArrayList<IViewItem>(list));
+    }
+    /**
+     * please use {@link this#updateList2}
+     * @param datas 数据源
+     */
+    @Override
+    @Deprecated
+    public void addData(List<IViewItem> datas, int position) {
+        super.addData(datas, position);
+    }
+
+    public <T extends IViewItem> void addData2(List<T> list,int position){
+        if(list== null || list.isEmpty()){
+            return;
+        }
+        addData(new ArrayList<IViewItem>(list),position);
+    }
+
+    @Override
+    public void setOnItemClickListener(OnItemClickListener clickListener) {
+        throw new RuntimeException("please use BaseViewItem#onViewLongClick");
+    }
+
+    @Override
+    public void setOnItemLongClickListener(OnItemLongClickListener longClickListener) {
+        throw  new RuntimeException("please use BaseViewItem#onViewClick");
+
     }
 }

@@ -1,5 +1,7 @@
 package com.iswsc.jacenadapter.item;
 
+import android.view.View;
+
 import com.iswsc.jacenadapter.R;
 import com.iswsc.jacenadapter.bean.UserInfoBean;
 import com.iswsc.jacenmultiadapter.BaseAllViewItem;
@@ -19,5 +21,10 @@ public class UserInfoAllDataItem extends BaseAllViewItem<UserInfoBean, BaseViewH
     @Override
     public void onBindViewHolder(BaseViewHolder holder, UserInfoBean data, int position) {
         holder.setText(R.id.content, position + "");
+    }
+
+    @Override
+    public void onViewClick(View view, UserInfoBean data, int position) {
+        super.onViewClick(view, data, position);
     }
 }
