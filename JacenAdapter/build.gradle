@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 102
-        versionName "1.0.3"
+        versionName VERSION_NAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -30,10 +30,4 @@ dependencies {
 
     compileOnly 'androidx.recyclerview:recyclerview:1.2.1'
 }
-//ext {
-//    PUBLISH_ARTIFACT_ID = "JacenAdapter" //你的artifact_id，一般是module的名字
-//    PUBLISH_VERSION = "1.0.3"  //发布版本号
-//    PUBLISH_GROUP_ID = 'com.iswsc'  //你的sonatype的group_id
-//}
-//apply from: rootProject.file('update_maven.gradle')
 apply from: rootProject.file('upload.gradle')
