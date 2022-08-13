@@ -58,12 +58,7 @@ public class MainActivity extends AppCompatActivity {
 //        adapter.updateList(new ArrayList<IViewItem>(list));
         adapter.updateList2(list);
         mRecyclerView.setAdapter(adapter);
-        List<TextView> aaa= new ArrayList<>();
-        asd(aaa);
     }
 
-    private <T extends View>void asd(List<T> list){
-
-    }
 
 }
