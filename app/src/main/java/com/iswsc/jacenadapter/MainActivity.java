@@ -1,5 +1,6 @@
 package com.iswsc.jacenadapter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ import com.iswsc.jacenmultiadapter.IViewItem;
 import com.iswsc.jacenmultiadapter.JacenAdapter;
 import com.iswsc.jacenmultiadapter.JacenAllAdapter;
 import com.iswsc.jacenmultiadapter.OnItemClickListener;
+import com.iswsc.jacenmultiadapter.SimpleItem;
+import com.iswsc.jacenmultiadapter.SimpleViewItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,31 +37,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         RecyclerView mRecyclerView = findViewById(R.id.mRecyclerView);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        List<UserInfoBean> list = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            list.add(new UserInfoBean("wsc"));
-        }
-        mAdapter = new JacenAdapter<>(this, list, new BaseViewItem<UserInfoBean, BaseViewHolder>() {
-            @Override
-            public int getViewHolderLayoutId() {
-                return 0;
-            }
+        mAdapter = new JacenAdapter<>(this, new SimpleItem<UserInfoBean>(R.layout.item_text) {
 
             @Override
             public void onBindViewHolder(BaseViewHolder holder, UserInfoBean data, int position) {
+                holder.setText(R.id.content,data.getUserInfo());
+            }
 
+            @Override
+            public int[] addOnClickViewIds() {
+                return new int[]{R.id.content};
+            }
+
+            @Override
+            public void onViewClick(View view, UserInfoBean data, int position) {
+                startActivity(new Intent(context,data.getClazz()));
             }
         });
-        final JacenAllAdapter adapter = new JacenAllAdapter(this,new UserInfoAllDataItem(),new UserInfoAllData2Item(),new UserInfoAllData3Item());
-        adapter.addData(new UserInfoBean("1"));
-        adapter.addData(new UserInfoBean2("2"));
-        adapter.addData(new UserInfoBean3("3"));
-
-//        adapter.updateList(new ArrayList<IViewItem>(list));
-        adapter.updateList2(list);
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.addData(new UserInfoBean("JacenAdapter",JacenAdapterActivity.class));
+        mAdapter.addData(new UserInfoBean("JacenAllAdapterActivity",JacenAllAdapterActivity.class));
     }
-
 
 }

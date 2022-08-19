@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -28,5 +31,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(':JacenAdapter')
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-//    implementation 'com.iswsc:JacenAdapter:1.0.4'
 }

@@ -9,9 +9,23 @@ import com.iswsc.jacenmultiadapter.IViewItem;
  */
 public class UserInfoBean implements IViewItem{
     private String userInfo;
+    private Class clazz;
+
+    public void setClazz(Class clazz) {
+        this.clazz = clazz;
+    }
+
+    public Class getClazz() {
+        return clazz;
+    }
 
     public UserInfoBean(String userInfo) {
         this.userInfo = userInfo;
+    }
+    public UserInfoBean(String userInfo,Class clazz) {
+        this.clazz = clazz;
+        this.userInfo = userInfo;
+
     }
 
     public String getUserInfo() {

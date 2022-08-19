@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:id="@+id/content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="15dp"
         android:text="aksdgasd"
         android:textColor="#000000"
         android:textSize="14sp"
